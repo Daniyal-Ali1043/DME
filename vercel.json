@@ -1,0 +1,24 @@
+
+{
+  "functions": {
+    "api/webhooks/stripe/route.ts": { "memory": 256, "maxDuration": 15 },
+    "api/webhooks/nowpayments/route.ts": { "memory": 256, "maxDuration": 15 },
+    "api/cron/pre-renewal/route.ts": { "memory": 256, "maxDuration": 30 },
+    "api/cron/dunning/route.ts": { "memory": 256, "maxDuration": 30 },
+    "api/cron/transparency-report/route.ts": { "memory": 512, "maxDuration": 60 }
+  },
+  "headers": [
+    {
+      "source": "/api/webhooks/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" },
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive" }
+      ]
+    }
+  ],
+  "crons": [
+    { "path": "/api/cron/pre-renewal", "schedule": "0 9 * * *" },
+    { "path": "/api/cron/dunning", "schedule": "0 10 * * *" },
+    { "path": "/api/cron/transparency-report", "schedule": "0 8 * * 1" }
+  ]
+}

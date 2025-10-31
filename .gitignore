@@ -1,0 +1,24 @@
+# dependencies
+/node_modules
+
+# next.js build output
+/.next
+/out
+
+# env files (keep .env.example, do NOT commit .env)
+.env
+.env.local
+.env.development.local
+.env.production.local
+.env.test.local
+
+# OS/editor junk
+.DS_Store
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.idea
+.vscode/*
+!.vscode/extensions.json
