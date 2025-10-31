@@ -25,61 +25,11 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
 
-      - name: Create .env.local
+      - name: Create .env.local from .env.example
         run: |
-          : > .env.local
+          cp .env.example .env.local
           echo "POSTMARK_SERVER_TOKEN=${{ secrets.POSTMARK_SERVER_TOKEN }}" >> .env.local
           echo "POSTMARK_FROM_EMAIL=${{ secrets.POSTMARK_FROM_EMAIL }}" >> .env.local
-
-          echo "APP_URL=http://localhost:3000" >> .env.local
-          echo "NEXT_PUBLIC_APP_URL=http://localhost:3000" >> .env.local
-          echo "NEXTAUTH_URL=http://localhost:3000" >> .env.local
-          echo "NEXTAUTH_SECRET=local-dev-secret" >> .env.local
-
-          echo "DATABASE_URL=postgres://user:pass@localhost:5432/devdb" >> .env.local
-
-          echo "UPSTASH_REDIS_REST_URL=http://localhost:8080" >> .env.local
-          echo "UPSTASH_REDIS_REST_TOKEN=dummy-upstash-tokenbranch" >> .env.local
-          echo "API_RATE_LIMIT_REQUESTS=120" >> .env.local
-          echo "API_RATE_LIMIT_WINDOW=60" >> .env.local
-          echo "WEBHOOK_RATE_LIMIT_REQUESTS=60" >> .env.local
-          echo "WEBHOOK_RATE_LIMIT_WINDOW=60" >> .env.local
-          echo "WEBHOOK_IP_ALLOWLIST=" >> .env.local
-
-          echo "BLOCKED_COUNTRIES=GB,UK,EU" >> .env.local
-
-          echo "STRIPE_SECRET_KEY=sk_test_123" >> .env.local
-          echo "STRIPE_WEBHOOK_SECRET=whsec_123" >> .env.local
-          echo "STRIPE_PRICE_ID_STARTER=price_starter" >> .env.local
-          echo "STRIPE_PRICE_ID_PRO=price_pro" >> .env.local
-          echo "STRIPE_PRICE_ID_ELITE=price_elite" >> .env.local
-          echo "STRIPE_PRICE_ID_LIFETIME=price_lifetime" >> .env.local
-
-          echo "NOWPAYMENTS_API_KEY=test_key" >> .env.local
-          echo "NOWPAYMENTS_IPN_SECRET=test_secret" >> .env.local
-
-          echo "NEXT_PUBLIC_POSTHOG_KEY=test_public" >> .env.local
-          echo "POSTHOG_KEY=test_server" >> .env.local
-          echo "POSTHOG_HOST=https://app.posthog.com" >> .env.local
-
-          echo "EMAIL_SERVER=smtp://user:pass@smtp.mailtrap.io:2525" >> .env.local
-          echo "EMAIL_FROM=hello@example.com" >> .env.local
-
-          echo "GOOGLE_CLIENT_ID=dev-client-id" >> .env.local
-          echo "GOOGLE_CLIENT_SECRET=dev-client-secret" >> .env.local
-
-          echo "CRON_SECRET=dummy-cron-secret" >> .env.local
-          echo "SENTRY_DSN=" >> .env.local
-          echo "SENTRY_TRACES_SAMPLE_RATE=0.2" >> .env.local
-          echo "SENTRY_PROFILES_SAMPLE_RATE=0.1" >> .env.local
-          echo "SENTRY_REPLAYS_SESSION_SAMPLE_RATE=0" >> .env.local
-          echo "SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE=1.0" >> .env.local
-          echo "SENTRY_ENABLE_DEV=0" >> .env.local
-
-          echo "EVENTS_API_SECRET=dummy-events-secret" >> .env.local
-
-          echo "MYFXBOOK_URL=" >> .env.local
-          echo "FXBLUE_URL=" >> .env.local
 
       - name: Install dependencies
         run: npm ci
