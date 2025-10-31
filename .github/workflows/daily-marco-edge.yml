@@ -30,7 +30,8 @@ jobs:
           cp .env.example .env.local
           echo "POSTMARK_SERVER_TOKEN=${{ secrets.POSTMARK_SERVER_TOKEN }}" >> .env.local
           echo "POSTMARK_FROM_EMAIL=${{ secrets.POSTMARK_FROM_EMAIL }}" >> .env.local
-          # Required dummies so build doesn’t crash
+
+          # Dummy values to prevent build-time failures
           echo "UPSTASH_REDIS_REST_URL=http://localhost:8080" >> .env.local
           echo "UPSTASH_REDIS_REST_TOKEN=dummy-upstash-token" >> .env.local
           echo "STRIPE_SECRET_KEY=sk_test_123" >> .env.local
@@ -40,6 +41,8 @@ jobs:
           echo "STRIPE_PRICE_ID_ELITE=price_elite" >> .env.local
           echo "STRIPE_PRICE_ID_LIFETIME=price_lifetime" >> .env.local
           echo "EVENTS_API_SECRET=dummy-events-secret" >> .env.local
+          echo "NOWPAYMENTS_API_KEY=test_key" >> .env.local
+          echo "NOWPAYMENTS_IPN_SECRET=test_secret" >> .env.local
 
       - name: Install dependencies
         run: npm ci
