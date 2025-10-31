@@ -31,6 +31,11 @@ jobs:
           echo "POSTMARK_SERVER_TOKEN=${{ secrets.POSTMARK_SERVER_TOKEN }}" >> .env.local
           echo "POSTMARK_FROM_EMAIL=${{ secrets.POSTMARK_FROM_EMAIL }}" >> .env.local
 
+          # Add required dummy build-time variables
+          echo "STRIPE_SECRET_KEY=sk_test_dummy" >> .env.local
+          echo "STRIPE_WEBHOOK_SECRET=whsec_dummy" >> .env.local
+          echo "EVENTS_API_SECRET=dummy_event_secret" >> .env.local
+
       - name: Install dependencies
         run: npm ci
 
