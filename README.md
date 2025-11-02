@@ -19,3 +19,6 @@ Production-grade Next.js 14 app implementing:
 4. `npm run dev`
 
 Deploy on Vercel. Configure cron in `vercel.json` and set required env vars.
+
+To run docker file 
+command : docker compose up --build
