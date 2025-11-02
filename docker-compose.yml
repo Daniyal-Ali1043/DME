@@ -1,113 +1,32 @@
+version: "3.8"
+
 services:
+  web:
+    build: .
+    container_name: dme-web
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+    command: sh ./scripts/start.sh
+    volumes:
+      - .:/app
+    restart: unless-stopped
+
   db:
-    image: postgres:16-bookworm
+    image: postgres:16
     container_name: dme-db
     environment:
-      POSTGRES_DB: devdb
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: pass
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: devpass
+      POSTGRES_DB: dme
     ports:
       - "5432:5432"
     volumes:
-      - dbdata:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user -d devdb"]
-      interval: 5s
-      timeout: 3s
-      retries: 20
-
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: dme-app
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      # ── Core ─────────────────────────────────────────────
-      APP_URL: http://localhost:3000
-      NEXT_PUBLIC_APP_URL: http://localhost:3000
-      NEXTAUTH_URL: http://localhost:3000
-      NEXTAUTH_SECRET: local-dev-secret
-
-      # ── Database (use service name "db" inside Docker) ───
-      DATABASE_URL: postgres://user:pass@db:5432/devdb
-
-      # ── Upstash / Rate limits (point to host if you run a mock) ─────
-      UPSTASH_REDIS_REST_URL: http://host.docker.internal:8080
-      UPSTASH_REDIS_REST_TOKEN: dummy-upstash-tokenbranch
-      API_RATE_LIMIT_REQUESTS: "120"
-      API_RATE_LIMIT_WINDOW: "60"
-      WEBHOOK_RATE_LIMIT_REQUESTS: "60"
-      WEBHOOK_RATE_LIMIT_WINDOW: "60"
-      WEBHOOK_IP_ALLOWLIST:
-
-      # ── Geofence ─────────────────────────────────────────
-      BLOCKED_COUNTRIES: GB,UK,EU
-
-      # ── Stripe (dummy) ──────────────────────────────────
-      STRIPE_SECRET_KEY: sk_test_123
-      STRIPE_WEBHOOK_SECRET: whsec_123
-      STRIPE_PRICE_ID_STARTER: price_starter
-      STRIPE_PRICE_ID_PRO: price_pro
-      STRIPE_PRICE_ID_ELITE: price_elite
-      STRIPE_PRICE_ID_LIFETIME: price_lifetime
-
-      # ── NOWPayments (dummy) ─────────────────────────────
-      NOWPAYMENTS_API_KEY: test_key
-      NOWPAYMENTS_IPN_SECRET: test_secret
-
-      # ── PostHog ─────────────────────────────────────────
-      NEXT_PUBLIC_POSTHOG_KEY: test_public
-      POSTHOG_KEY: test_server
-      POSTHOG_HOST: https://app.posthog.com
-
-      # ── Postmark / Email ────────────────────────────────
-      POSTMARK_SERVER_TOKEN: dummy-postmark-key
-      POSTMARK_FROM_EMAIL: hello@example.com
-      EMAIL_SERVER: smtp://user:pass@smtp.mailtrap.io:2525
-      EMAIL_FROM: hello@example.com
-
-      # ── Google OAuth ────────────────────────────────────
-      GOOGLE_CLIENT_ID: dev-client-id
-      GOOGLE_CLIENT_SECRET: dev-client-secret
-
-      # ── Cron / Sentry / Events ──────────────────────────
-      CRON_SECRET: dummy-cron-secret
-      SENTRY_DSN:
-      SENTRY_TRACES_SAMPLE_RATE: "0.2"
-      SENTRY_PROFILES_SAMPLE_RATE: "0.1"
-      SENTRY_REPLAYS_SESSION_SAMPLE_RATE: "0"
-      SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE: "1.0"
-      SENTRY_ENABLE_DEV: "0"
-      EVENTS_API_SECRET: dummy-events-secret
-
-      # ── Badges (optional) ───────────────────────────────
-      MYFXBOOK_URL:
-      FXBLUE_URL:
-
-    ports:
-      - "3000:3000"
-    # Linux: enable host.docker.internal to reach host services (e.g., :8080)
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-
-  # One-off: run Drizzle migrations WITHOUT doing npm install again
-  migrator:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: devtools     # ← uses the devtools stage (has node_modules + code)
-    container_name: dme-migrator
-    working_dir: /app
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      DATABASE_URL: postgres://user:pass@db:5432/devdb
-    command: ["npx", "drizzle-kit", "push"]
-    # no volumes, no npm ci → no network needed
+      - dme_data:/var/lib/postgresql/data
+    restart: unless-stopped
 
 volumes:
-  dbdata:
+  dme_data:
