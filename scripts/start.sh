@@ -7,16 +7,13 @@ until nc -z db 5432; do
   sleep 2
 done
 
-echo "✅ Database is ready! Running migrations..."
-# Use drizzle-kit migrate to apply schema changes safely
-npx drizzle-kit migrate || echo "⚠️  Migration step skipped or failed, continuing..."
+echo "✅ Database is ready! Running Drizzle migrations..."
+npx drizzle-kit migrate || echo "⚠️ Migration step skipped or failed, continuing..."
 
-echo "🚀 Starting Next.js app (standalone)..."
-
-# If standalone output exists, start using the built server
-if [ -f ".next/standalone/server.js" ]; then
-  node .next/standalone/server.js
+echo "🚀 Starting Next.js app..."
+if [ -f "server.js" ]; then
+  node server.js
 else
-  echo "⚠️  Standalone server.js not found, falling back to 'next start'"
+  echo "⚠️ server.js not found, falling back to npm start"
   npm run start
 fi

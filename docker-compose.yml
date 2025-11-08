@@ -10,9 +10,6 @@ services:
       - .env
     depends_on:
       - db
-    command: sh ./scripts/start.sh
-    volumes:
-      - .:/app
     restart: unless-stopped
 
   db:
